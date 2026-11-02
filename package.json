@@ -1,21 +1,21 @@
 {
-  "name": "@karasu-lab/api-permissions",
-  "version": "0.1.0",
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "devDependencies": {
-    "typescript": "^5"
-  },
-  "files": [
-    "src"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Karasu-Lab/api-permissions-package.git"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "public"
-  }
+    "name": "@karasu-lab/api-permissions",
+    "version": "0.1.0",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "devDependencies": {
+        "typescript": "^5"
+    },
+    "files": [
+        "src"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Karasu-Lab/api-permissions-package.git"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "public"
+    }
 }
