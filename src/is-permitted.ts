@@ -7,10 +7,7 @@ export function toOauthScope(
     return `${permission.action}:${permission.resource}`;
 }
 
-export function isPermitted(
-    auth: RouteAuthContext,
-    publicId: string,
-): boolean {
+export function isPermitted(auth: RouteAuthContext, publicId: string): boolean {
     if (auth.authMethod === "session") return true;
     if (auth.authMethod === "apiKey")
         return auth.permissionIds?.includes(publicId) ?? false;
