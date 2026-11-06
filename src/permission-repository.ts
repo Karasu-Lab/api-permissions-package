@@ -1,7 +1,6 @@
 export interface PermissionRecord {
     id: string;
     publicId: string;
-    numericId: number;
 }
 
 export interface GrantedPermissionRecord {
@@ -9,7 +8,6 @@ export interface GrantedPermissionRecord {
     permission: PermissionRecord;
 }
 
-/** Implemented by the consuming app so this package stays runtime- and storage-agnostic. */
 export interface PermissionRepository {
     findActive(): Promise<PermissionRecord[]>;
     findActiveByPublicIds(
