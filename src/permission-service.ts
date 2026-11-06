@@ -1,22 +1,20 @@
-import type { AbstractPermission } from "./abstract-permission";
+import { parsePermissionId } from "./permission";
 import type {
     PermissionRecord,
     PermissionRepository,
 } from "./permission-repository";
-import { permissionBitmask, type Permission } from "./registry";
 import type { PermissionSummary } from "./types";
 
 export class UnknownPermissionError extends Error {}
 
-/** Rows whose numeric id the code registry doesn't know are skipped, so the catalog can run ahead of a deploy. */
 function toSummary(record: PermissionRecord): PermissionSummary | null {
-    const permission = permissionBitmask.fromId(record.numericId);
-    if (!permission) return null;
+    const definition = parsePermissionId(record.publicId);
+    if (!definition) return null;
     return {
-        publicId: record.publicId,
-        numericId: record.numericId,
-        resource: permission.resource(),
-        action: permission.action(),
+        publicId: definition.publicId,
+        operation: definition.operation,
+        resource: definition.resource,
+        action: definition.action,
     };
 }
 
@@ -39,7 +37,13 @@ export class PermissionService {
         return toSummaries(await this.repository.findActive());
     }
 
-    /** Rejects the whole grant when any public id is unknown, so a key never ends up with a partial set. */
+    async listOperationPermissions(
+        operation: string,
+    ): Promise<PermissionSummary[]> {
+        const summaries = await this.listActivePermissions();
+        return summaries.filter((summary) => summary.operation === operation);
+    }
+
     async grant(
         apiKeyId: string,
         publicIds: readonly string[],
@@ -76,19 +80,9 @@ export class PermissionService {
         return granted;
     }
 
-    async resolve(apiKeyId: string): Promise<Permission[]> {
+    async resolve(apiKeyId: string): Promise<string[]> {
         const granted =
             (await this.getGrantedPermissions([apiKeyId])).get(apiKeyId) ?? [];
-        return granted
-            .map((summary) => permissionBitmask.fromId(summary.numericId))
-            .filter(
-                (permission): permission is Permission =>
-                    permission !== undefined,
-            );
-    }
-
-    async resolveBitmask(apiKeyId: string): Promise<bigint> {
-        const permissions: AbstractPermission[] = await this.resolve(apiKeyId);
-        return permissionBitmask.build(permissions);
+        return granted.map((summary) => summary.publicId);
     }
 }

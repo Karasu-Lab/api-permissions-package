@@ -1,19 +1,16 @@
-import type { AbstractPermission } from "./abstract-permission";
-
 export type RouteAuthMethod = "apiKey" | "oauthApp" | "session";
 
 export interface RouteAuthContext {
     userId: string;
     authMethod: RouteAuthMethod;
-    permissions: AbstractPermission[] | null;
+    permissionIds: string[] | null;
     scopes: string[] | null;
 }
 
-/** Implemented by the consuming app so this package stays storage-agnostic. */
 export interface TokenValidator {
     validateApiKey(
         token: string,
-    ): Promise<{ userId: string; permissions: AbstractPermission[] } | null>;
+    ): Promise<{ userId: string; permissionIds: string[] } | null>;
     validateOauthToken(
         token: string,
     ): Promise<{ userId: string; scopes: string[] } | null>;
@@ -21,7 +18,7 @@ export interface TokenValidator {
 
 export interface PermissionSummary {
     publicId: string;
-    numericId: number;
+    operation: string;
     resource: string;
     action: string;
 }
@@ -35,7 +32,6 @@ export interface ApiKeySummary {
     permissions: PermissionSummary[];
 }
 
-/** The secret is only ever returned here, right after issuance. */
 export interface ApiKeyCreated extends ApiKeySummary {
     key: string;
 }
