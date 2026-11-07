@@ -29,9 +29,9 @@ export interface ApiKeySummary {
     start: string | null;
     createdAt: string;
     lastRequest: string | null;
-    permissions: PermissionSummary[];
 }
 
 export interface ApiKeyCreated extends ApiKeySummary {
     key: string;
+    permissions: PermissionSummary[];
 }
