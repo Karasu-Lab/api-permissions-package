@@ -63,6 +63,24 @@ export class PermissionService {
         return toSummaries(records);
     }
 
+    async setGranted(
+        apiKeyId: string,
+        publicIds: readonly string[],
+    ): Promise<PermissionSummary[]> {
+        const uniquePublicIds = [...new Set(publicIds)];
+        const records =
+            uniquePublicIds.length === 0
+                ? []
+                : await this.repository.findActiveByPublicIds(uniquePublicIds);
+        if (records.length !== uniquePublicIds.length)
+            throw new UnknownPermissionError();
+        await this.repository.replaceGranted(
+            apiKeyId,
+            records.map((record) => record.id),
+        );
+        return toSummaries(records);
+    }
+
     async getGrantedPermissions(
         apiKeyIds: readonly string[],
     ): Promise<Map<string, PermissionSummary[]>> {

@@ -14,6 +14,10 @@ export interface PermissionRepository {
         publicIds: readonly string[],
     ): Promise<PermissionRecord[]>;
     grant(apiKeyId: string, permissionIds: readonly string[]): Promise<void>;
+    replaceGranted(
+        apiKeyId: string,
+        permissionIds: readonly string[],
+    ): Promise<void>;
     findGranted(
         apiKeyIds: readonly string[],
     ): Promise<GrantedPermissionRecord[]>;
